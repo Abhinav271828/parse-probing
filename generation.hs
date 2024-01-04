@@ -53,11 +53,13 @@ interpret p (Not e1) x = let (n1, x1) = interpret p e1 x
                               Nothing -> (n1+1, Just [])
                               Just _ -> (n1+1, Nothing)
 
+-- a*b*
 g1 :: PEG
 g1 = PEG ['a', 'b']
          [("S", Seq (Star (Term 'a')) (Star (Term 'b')))]
          (Nonterm "S")
 
+-- (ac)^n (c*d | cd*) (db)^n
 g2 :: PEG
 g2 = PEG ['a', 'b', 'c', 'd']
          [("S", Seq (Term 'a') (Seq (Nonterm "T") (Term 'b'))),
@@ -66,6 +68,7 @@ g2 = PEG ['a', 'b', 'c', 'd']
                                (Seq (Term 'c') (Seq (Nonterm "S") (Term 'd')))))]
          (Nonterm "S")
 
+-- Expr
 g3 :: PEG
 g3 = PEG ['0', '1', '+', '*', '^', '(', ')']
          [("S", Seq (Nonterm "M") (Star (Seq (Term '+') (Nonterm "M")))),
@@ -74,18 +77,21 @@ g3 = PEG ['0', '1', '+', '*', '^', '(', ')']
           ("V", Choice (Term '0') (Choice (Term '1') (Seq (Term '(') (Seq (Nonterm "S") (Term ')')))))]
          (Nonterm "S")
 
+-- a^n b^n c*
 g4 :: PEG
 g4 = PEG ['a', 'b', 'c']
-         [("S", Seq (amp (Seq (Nonterm "A") (Term 'c'))) (Seq (plus (Term 'a')) (Nonterm "B"))),
-          ("A", Seq (Term 'a') (Seq (qmark (Nonterm "A")) (Term 'b'))),
-          ("B", Seq (Term 'b') (Seq (qmark (Nonterm "B")) (Term 'c')))]
-         (Nonterm "S")
-
-g5 :: PEG
-g5 = PEG ['a', 'b', 'c']
          [("S",  Seq (Nonterm "AB") (Star (Term 'c'))),
           ("AB", Choice (Seq (Term 'a') (Seq (Nonterm "AB") (Term 'b'))) (amp (Nonterm "BC"))),
           ("BC", qmark (Seq (Term 'b') (Seq (Nonterm "BC") (Term 'c'))))]
+         (Nonterm "S")
+
+
+-- a^n b^n c^n
+g5 :: PEG
+g5 = PEG ['a', 'b', 'c']
+         [("S", Seq (amp (Seq (Nonterm "A") (Term 'c'))) (Seq (plus (Term 'a')) (Nonterm "B"))),
+          ("A", Seq (Term 'a') (Seq (qmark (Nonterm "A")) (Term 'b'))),
+          ("B", Seq (Term 'b') (Seq (qmark (Nonterm "B")) (Term 'c')))]
          (Nonterm "S")
 
 main :: IO ()
