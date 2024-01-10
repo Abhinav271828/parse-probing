@@ -137,8 +137,8 @@ if __name__ == "__main__":
   alph = ['a', 'b', '[', ']']
   A = len(alph)
   L = 20
-  #for i in range(A**L):
-  for i in random.sample(range(A**L), 2**20):
+  for i in range(A**L): # This iterates over all strings
+  #for i in random.sample(range(A**L), 2**20): # This randomly picks strings
     s = ''
     n = i
     for _ in range(L):

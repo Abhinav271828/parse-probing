@@ -174,7 +174,7 @@ if __name__ == "__main__":
   A = len(alph)
   L = 11
   #for i in range(A**L): # This iterates over all strings
-  #for i in random.sample(range(A**L), 2**20): # This randomly picks strings; almost always fails
+  #for i in random.sample(range(A**L), 2**20): # This randomly picks strings
   #  s = ''
   #  n = i
   #  for _ in range(L):
