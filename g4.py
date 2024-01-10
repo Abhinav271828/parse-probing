@@ -52,9 +52,9 @@ def pS(s):
                     case y, s___:
                       return ('a' + x + y, s___)
                     case y, s___, None:
-                      return ('a' + x + y, s___)
+                      return ('a' + x + y, s___, None)
                 case x, s__, None:
-                    return ('a' + x, s__)
+                    return ('a' + x, s__, None)
             case _:
               return '', s, None
         case _:
