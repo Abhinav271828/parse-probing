@@ -1,57 +1,7 @@
+module Main where
+
+import PEG
 import System.Environment
-
-data PEG = PEG [Char] [(String, Expr)] Expr
-
-data Expr = Eps
-          | Term Char
-          | Nonterm String
-          | Seq Expr Expr
-          | Choice Expr Expr
-          | Star Expr
-          | Not Expr
-
-qmark :: Expr -> Expr
-qmark = flip Choice Eps
-
-plus :: Expr -> Expr
-plus e = Seq e (Star e)
-
-amp :: Expr -> Expr
-amp = Not . Not
-
-interpret :: PEG -> Expr -> [Char] -> (Int, Maybe [Char])
-interpret p Eps x = (1, Just [])
-interpret p (Term c) x = case x of
-                            [] -> (1, Nothing)
-                            (a : as) -> if (a == c) then (1, Just [c]) else (1, Nothing)
-interpret p@(PEG _ r _) (Nonterm n) x = case (lookup n r) of
-                                         Just e -> interpret p e x
-                                         Nothing -> (1, Nothing)
-interpret p (Seq e1 e2) x = let (n1, x1) = interpret p e1 x
-                            in case x1 of
-                                Nothing -> (n1+1, Nothing)
-                                Just y1 -> let (n2, x2) = interpret p e2 (drop (length y1) x)
-                                           in case x2 of
-                                               Nothing -> (n1+n2+1, Nothing)
-                                               Just y2 -> (n1+n2+1, Just $ y1 ++ y2)
-interpret p (Choice e1 e2) x = let (n1, x1) = interpret p e1 x
-                               in case x1 of
-                                    Nothing -> let (n2, x2) = interpret p e2 x
-                                               in case x2 of
-                                                    Nothing -> (n1+n2+1, Nothing)
-                                                    Just y2 -> (n1+n2+1, Just y2)
-                                    Just y1 -> (n1+1, Just y1)
-interpret p (Star e1) x = let (n1, x1) = interpret p e1 x
-                          in case x1 of
-                                Nothing -> (n1+1, Just [])
-                                Just y1 -> let (n2, x2) = interpret p (Star e1) (drop (length y1) x)
-                                           in case x2 of
-                                                Nothing -> (n1+n2+1, Just $ y1)
-                                                Just y2 -> (n1+n2+1, Just $ y1 ++ y2)
-interpret p (Not e1) x = let (n1, x1) = interpret p e1 x
-                         in case x1 of
-                              Nothing -> (n1+1, Just [])
-                              Just _ -> (n1+1, Nothing)
 
 -- a*b*
 g1 :: PEG
@@ -77,21 +27,18 @@ g3 = PEG ['0', '1', '+', '*', '^', '(', ')']
           ("V", Choice (Term '0') (Choice (Term '1') (Seq (Term '(') (Seq (Nonterm "S") (Term ')')))))]
          (Nonterm "S")
 
--- a^n b^n c*
+-- a^n b^n c^n
 g4 :: PEG
 g4 = PEG ['a', 'b', 'c']
-         [("S",  Seq (Nonterm "AB") (Star (Term 'c'))),
-          ("AB", Choice (Seq (Term 'a') (Seq (Nonterm "AB") (Term 'b'))) (amp (Nonterm "BC"))),
-          ("BC", qmark (Seq (Term 'b') (Seq (Nonterm "BC") (Term 'c'))))]
-         (Nonterm "S")
-
-
--- a^n b^n c^n
-g5 :: PEG
-g5 = PEG ['a', 'b', 'c']
          [("S", Seq (amp (Seq (Nonterm "A") (Term 'c'))) (Seq (plus (Term 'a')) (Nonterm "B"))),
           ("A", Seq (Term 'a') (Seq (qmark (Nonterm "A")) (Term 'b'))),
           ("B", Seq (Term 'b') (Seq (qmark (Nonterm "B")) (Term 'c')))]
+         (Nonterm "S")
+
+-- Dyck-1
+g5 :: PEG
+g5 = PEG ['(', ')']
+         [("S", Choice (Seq (Term '(') (Seq (Nonterm "S") (Seq (Term ')') (Nonterm "S")))) Eps)]
          (Nonterm "S")
 
 main :: IO ()
