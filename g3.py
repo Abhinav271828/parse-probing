@@ -33,6 +33,14 @@ def pChar(s):
   if s == '': return None
   return s[0], s[1:]
 
+# S -> M; P
+# P -> +; M; P / ε
+# M -> E; T
+# T -> ×; E; T / ε
+# E -> V; C
+# C -> ^; V; C / ε
+# V -> \d / [; S; ]
+
 @memoize
 def pS(s):
   match pM(s):
@@ -143,14 +151,6 @@ def pV(s):
           return ('[' + x, s__, None)
     case _:
       return '', s, None
-
-# S -> M; P
-# P -> +; M; P / ε
-# M -> E; T
-# T -> ×; E; T / ε
-# E -> V; C
-# C -> ^; V; C / ε
-# V -> \d / [; S; ]
 
 def parse(s):
   match pS(s):
