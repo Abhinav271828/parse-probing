@@ -47,6 +47,8 @@ def pS(s):
             match pChar(s__):
               case ']', s___:
                 return ('[' + x + ']', s___)
+              case _:
+                return ('[' + x, s__, None)
           case x, s__, None:
             return '[' + x, s__, None
     case _:
