@@ -6,3 +6,4 @@ A study of internal representations of models trained to parse PEGs.
 * `generation.hs`: Define five grammars and iterate over all strings of a fixed length.
 * `generate.sh`: Iterate over all strings of a fixed length (too slow).
 * `generation.py`: Randomly create grammars according to a distribution (useless).
+* `g{k}.py`: Generate and parse strings for grammar k, either randomly or enumerate all strings.
