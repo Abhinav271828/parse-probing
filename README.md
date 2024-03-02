@@ -5,6 +5,7 @@ A study of internal representations of models trained to parse PEGs.
 `.`  
 `├── README.md`  
 `├── brack`: Data for the language `brack`  
+`|-- data.py`: Dataset class (PL `DataModule`) for any of the languages  
 `├── dataset.ipynb`: Dataset generation code  
 `├── dyck1`: Data for the language `dyckone`  
 `├── dyck3`: Data for the language `dyckthree`  
