@@ -1,7 +1,7 @@
 from typing import Any
 from data import *
 
-class ParsePEG(pl.LightningModule):
+class PEGParser(pl.LightningModule):
     def __init__(self, vocab_size,
                        out_possibilities,
                        d_model=32,

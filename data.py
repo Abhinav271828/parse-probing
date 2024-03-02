@@ -3,6 +3,7 @@ import torch
 from torch import nn, tensor
 from torch.utils.data import Dataset, DataLoader
 import pytorch_lightning as pl
+from pytorch_lightning.callbacks import EarlyStopping, LearningRateFinder, ModelCheckpoint
 import os
 from tqdm import tqdm
 
@@ -90,6 +91,6 @@ class PEGDataModule(pl.LightningDataModule):
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True)
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.batch_size, shuffle=True)
+        return DataLoader(self.val_dataset, batch_size=self.batch_size, shuffle=False)
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.batch_size, shuffle=True)
+        return DataLoader(self.test_dataset, batch_size=self.batch_size, shuffle=False)
