@@ -13,8 +13,8 @@ class PEGData(Dataset):
     in the corresponding directory.
     For each string, each character is mapped to a value in {0, 1, 2}.
     0 means that the string is still being parsed.
-    1 means that the string has failed.
-    2 means that the string has passed.
+    1 means that the string has passed.
+    2 means that the string has failed.
 
     Note that if any character maps to 1 or 2, all subsequent characters
     map to the same value.
@@ -43,8 +43,8 @@ class PEGData(Dataset):
             for line in f:
                 lines += 1
                 L = len(line)-2
-        self.input = torch.zeros(lines, L)
-        self.output = torch.zeros(lines, L)
+        self.input = torch.zeros(lines, L).int()
+        self.output = torch.zeros(lines, L).long()
 
     def get_data(self):
         filename = os.path.join(self.data_dir, f'{self.split}.txt')
@@ -58,11 +58,11 @@ class PEGData(Dataset):
             for line in tqdm(f, total=lines, desc=f"Creating {self.split} dataloader"):
                 s = line[:-1]
                 self.input[i] = tensor([self.ctoi(c) for c in s if c not in [',', '|']])
-                if ',' in s:
-                    l = s.index(',')
+                if '|' in s:
+                    l = s.index('|')
                     self.output[i, l+1:] = 1
                 else:
-                    l = s.index('|')
+                    l = s.index(',')
                     self.output[i, l+1:] = 2
                 self.output[i, :l+1] = 0
                 i += 1
