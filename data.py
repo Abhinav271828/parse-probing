@@ -75,7 +75,7 @@ class PEGData(Dataset):
         return self.input[i], self.output[i]
 
 class PEGDataModule(pl.LightningDataModule):
-    def __init__(self, language, batch_size=32):
+    def __init__(self, language, batch_size=1024):
         super().__init__()
         self.language = language
         self.batch_size = batch_size
