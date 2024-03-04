@@ -61,11 +61,11 @@ class PEGData(Dataset):
                 self.input[i] = tensor([self.ctoi(c) for c in s if c not in [',', '|']])
                 if '|' in s:
                     l = s.index('|')
-                    self.output[i, l+1:] = 1
+                    self.output[i, l:] = 1
                 else:
                     l = s.index(',')
-                    self.output[i, l+1:] = 2
-                self.output[i, :l+1] = 0
+                    self.output[i, l:] = 2
+                self.output[i, :l] = 0
                 i += 1
 
     def __len__(self):
